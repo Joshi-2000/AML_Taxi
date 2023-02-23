@@ -1,0 +1,214 @@
+\section{Docker (J.L.)}
+\label{sec-docker}
+Die Kerneigenschaft von Docker \cite{docker} besteht darin, dass Anwendungen in sogenannte 
+Docker-Container gekapselt werden. Dadurch können Docker-Container unter geringem Aufwand 
+auf Windows, Linux und Macintosh-Systemen ausgeführt werden. Diese Docker-Container stellen 
+die Funktionalität eines eigenen Linux-Systems zur Verfügung. Unter wenigen Ausnahmen, die 
+geringfügige Anpassungen benötigen, ist eine hohe Portierbarkeit zwischen unterschiedlichen 
+Betriebssystem gegeben. Dies ist insbesondere von Gewicht, da im Team unter Windows 10 und 
+11 auf mehreren PCs gearbeitet wurde und die Produktiv-Version des Projekts auf einem Linux-System 
+gehostet wird. Docker-Container weisen zwar Ähnlichkeiten zu virtuellen Maschinen auf, 
+unterscheiden sich jedoch in folgenden Punkten von diesen:
+\begin{enumerate}
+    \item Andere Virtualisierungsstrategie (Direkt auf dem Kernel)
+    \item Geringerer Speicherverbrauch
+    \item Optimierung für das Aufsetzen einer Micro-Service-Infrastruktur
+\end{enumerate}~\\
+ 
+
+
+\subsection{Docker-Compose}
+Docker-Compose \cite{docker-compose} ist ein Tool mit dem unter geringem Aufwand eine 
+Micro-Service-Architektur erstellt werden kann. Zur Konfiguration wird eine \textit{.yml} 
+Datei geschrieben, in der definiert wird, welche Docker-Container mit welchen Parametern 
+gestartet werden sollen. Die Docker-Container befinden sich in ihrem eigenen 
+Netzwerk \cite{docker-network}, welches von außen ohne weitere Konfigurationen nicht zu 
+erreichen ist. Das Netzwerk ist über Ports des Host-Systems, die zu Ports von den 
+Docker-Containern zugeordnet werden, zu erreichen. Somit kann unter anderem ein anderer Port 
+nach außen verwendet oder aber Ports von Containern, zum Beispiel von einer Datenbank, 
+von Zugriffen aus anderen Netzwerken geschützt werden. Innerhalb des definierten Netzwerkes 
+können die Container über IP-Adressen oder die in der Konfigurationsdatei definierten Hostnamen 
+ohne Beschränkungen kommunizieren. Da ein eigenes Netzwerk erstellt wird, ist 
+somit die Portierbarkeit auf andere Systeme deutlich erleichtert.
+\subsubsection{Docker-Compose Aufbau}
+Aufgrund der oben beschriebenen Eigenschaften und Umstände wurde die Entscheidung getroffen 
+Docker-Compose für dieses Projekt zu nutzen. Siehe hierzu den folgenden exemplarischen Aufbau 
+der entstanden Docker-Compose-Konfigurationsdatei: 
+
+\begin{lstlisting}[caption={Aufbau der Docker-Compose}, captionpos=b, label={fig:Docker Compose Aufbau}]
+version: "3.0"
+
+networks:
+  dd2-network:
+    driver: bridge
+
+volumes: 
+  db_mount:
+
+services:
+    ...
+\end{lstlisting}
+~\\Unter dem Punkt \textit{networks} werden die Netzwerke definiert. Es können auch mehrere Netzwerke 
+erstellt werden.\\
+Mittels des gleichnamigen Punktes werden sogenannte \textit{volumes} erstellt. Diese können verwendet 
+werden um eine persistente Speicherung der Daten in einer Datenbank zu gewährleisten. Durch das 
+Stoppen und Entfernen eines Containers werden die darin enthaltenen Daten gelöscht. 
+Docker-Container folgen hier den Prinzipien des Stateless-Programmings \cite{stateless-programming} und 
+sollten nur in Ausnahmefällen wie beispielsweise von diesem Prinzip abweichen.
+\subsubsection{Docker-Compose Service Definition}
+\label{sec-docker-db}
+Im Folgenden ist ein Auszug aus dem Punkt services zu sehen, der die Erstellung eines Datenbank-Containers beschreibt. 
+\begin{lstlisting}[language={}, caption={Datenbank Container}, captionpos=b, label={fig:Datenbank Container}]
+services:
+  postgresdb:
+    image: postgres
+    container_name: dd2-db
+    networks:
+      - dd2-network
+    environment:
+      - POSTGRES_PASSWORD=DD2Project
+      - POSTGRES_DB=DB_WATER
+    ports:
+      - '5432:5432'
+    volumes:
+      - db_mount:/var/lib/postgresql/data
+      - ./DB:/docker-entrypoint-initdb.d
+    restart: on-failure
+    
+\end{lstlisting}
+~\\Unter dem Punkt \textit{services} wird hier der Service mit dem Namen postgresdb definiert. 
+Als Grundlage wird das image \textit{postgres} verwendet. Dies ist ein über Dockerhub \cite{docker-hub} 
+zur Verfügung gestellter Docker-Image, das eine PostgreSQL Datenbank enthält, die unter geringen 
+Anpassungen lauffähig ist. \\
+Der unter \textit{container\_name} spezifizierte Containername ist der Hostname unter dem 
+dieser Container im darunter liegenden spezifizierten Netzwerk erreichbar ist. \\
+Unter dem Punkt \textit{environment} werden Umgebungsvariablen gesetzt, die von dem 
+verwendeten Postgres-Image erwartet werden. \\
+Der Punkt \textit{ports} definiert, welcher dockerinterne Port von außen über welchen Port des Hostsystems zu erreichen ist. 
+Im Kontext dieses Projektes bedeutet dies, dass auf dem Port 5432 des Servers eine Weiterleitung 
+auf den Port 5432 des definierten Services in dem Docker-Netzwerk stattfindet. 
+Diese Portweiterleitung wurde eingerichtet, um einen externen Zugriff für den Entwicklungsprozess 
+auf die Datenbank zu ermöglichen. Diese bewusste Abweichung von den allgemein anerkannten 
+Best-Practices ist damit zu rechtfertigen, dass es sich lediglich um ein studentisches Projekt 
+ohne sensible Daten handelt. \\
+Unter dem Punkt \textit{volumes} wird in dem ersten Eintrag festgelegt, dass die Daten, die Postgres abspeichert, persistent auf dem Host-System abgelegt werden. 
+Im zweiten Eintrag werden sämtliche Inhalte des Ordners \textit{DB}, der in dem Repository des Projektes liegt, in den Ordner \textit{/docker-entrypoint-initdb.d} kopiert. 
+In diesem Ordner sollen Skripte abgelegt werden, die, insofern noch keine Datenbanken vorhanden sind, beim Start ausgeführt werden. 
+Im Ordner \textit{DB} liegt eine Datei mit dem Namen \textit{init-user-db.sh}, die Anweisungen zum Erstellen von Datenbankbenutzern enthält.\\
+Der letzte Eintrag \textit{restart} bewirkt, dass bei einem unvorhergesehenem Fehlerfall dieser Docker-Container neu gestartet wird.
+
+
+\subsubsection{Micro-Service-Architektur}
+Das Projekt wurde als Micro-Service Archtitektur entwickelt. Daher bedarf es mehrerer Servicedefinitionen in der Docker-Compose-Konfigurationsdatei. Dise Servicedefinitionen erfolgen unter den folgenden Namen:
+\begin{enumerate}
+    \item postgresdb
+    \item pipeline
+    \item api
+    \item web
+    \item load
+\end{enumerate}~\\
+Unter dem Punkt \textit{pipeline} wird ein Container definiert, der die Daten-Pipeline umfasst. 
+In diesem werden die Daten von der \textit{PegelOnline} REST-API geladen, bearbeitet und in der Datenbank gespeichert. 
+Dieser Prozess wird zyklisch wiederholt.\\
+Der Punkt \textit{api} definiert die Buildanweisungen für einen Docker-Container, der die REST-API enthält, die die Daten aus der Datenbank für das Frontend bereitstellt. \\
+Der Punkt \textit{web} enthält die Anweisungen für das Frontend, welches die REST-API konsumiert und die Daten ansprechend aufbereitet.\\
+Die beiden zuletzt genannten Services können mit mehreren sogennanten Replicas (als Klone oder Kopien zu verstehende Container) erstellt 
+werden, um eine höhere Verfügbarkeit und Performance zu gewährleisten. \\
+
+\subsection{Load-Balancer}
+Aufgrund der oben beschriebenen Replicas ist ein Load-Balancer notwendig. Dieser wird im Punkt load definiert.
+Der Load-Balancer sorgt dafür, dass die Anfragen an die zugehörigen Services unter einer Aufteilung der Last weitergeleitet werden. 
+Dafür wird die folgende Konfigurationsdatei verwendet:\\
+
+\begin{lstlisting}[language={}, caption={Load-Balancer Nginx Konfiguration}, captionpos=b, label={fig:Load Balancer Nginx}]
+user  nginx;
+
+events {
+    worker_connections   1000;
+}
+http {
+    server {
+            listen 4000;
+            location / {
+                proxy_pass http://api;
+            }
+    }
+    server {
+            listen 5000;
+            location / {
+                proxy_pass http://web;
+            }
+    }
+}
+\end{lstlisting}
+~\\Diese Konfiguration ist notwendig, da mehrere Frontend- und REST-API-Container erstellt werden. 
+Die Netzwerkkonfiguration von Docker erlaubt jedoch nur das Port-Binding an einen bestimmten Container. 
+Über Nginx kann hier die Funktionalität erreicht werden, dass das Frontend oder die REST-API angesprochen werden können als ob sie jeweils nur ein einzelner Container wären.
+
+\subsection{Verbindung Frontend - REST-API}
+Zur Anbindung des Frontends an die API wurden sogenannte environments \cite{angular-environments} verwendet. 
+Diese sind ein vereinfachendes Konzept von Angular \cite{angular} um unterschiedliche Variablenwerte in der Produktiv- und der Entwicklungsumgebung zu verwenden.
+\subsubsection{Entwicklungsumgebung}
+Hierbei wurde für die Entwicklungsumgebung mittels folgender Codezeilen auf die Debug-Version der API verwiesen: 
+
+\lstdefinelanguage{JavaScript}{
+  keywords={break, case, catch, continue, debugger, default, delete, do, else, finally, for, function, if, in, instanceof, new, return, switch, this, throw, try, typeof, var, void, while, with, export, const},
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]',
+  morestring=[b]",
+  sensitive=true
+}
+
+\begin{lstlisting}[language={JavaScript}, caption={Entwicklungsvariablen}, captionpos=b, label={fig:environment dev}]
+export const environment = {
+  production: false,
+  api_url: "http://localhost:8000"
+};
+\end{lstlisting}
+~\\Dies verweist auf den localhost mit dem Standard-Port, der von FastAPI \cite{fastapi} verwendet wird, um eine Debug-Version der API zur Verfügung zu stellen. Diese führt automatisch einen Neustart durch, sobald zugehöriger Quellcode bearbeitet wurde. Somit können Veränderungen schnell durch das Frontend getestet werden. 
+
+\subsubsection{Produktivumgebung}
+Die Verwendung des Docker-Netzwerkes erfolgt in der Produktiv-Version des environments. Dies ist wie folgt definiert: 
+
+\begin{lstlisting}[language={JavaScript}, caption={Produktivvariablen}, captionpos=b, label={fig:environment prod}]
+export const environment = {
+  production: true,
+  api_url: "/api"
+};
+\end{lstlisting}
+~\\Hier wird für die Variable \textit{api\_url} der Wert \textit{"/api"} angegeben. Dies bedeutet, dass die URL für alle API-Anfragen nach folgendem Schema aufgebaut ist: \\\\
+https://\textit{Host}/api/\textit{Request\_Route}.\\\\
+Als Host ist in der Produktiv-Version auf dem Server die eingerichtete Subdomain anzusehen also \textit{dd2.janlippemeier.de}. 
+Ein HTTP Request durch den JavaScript Code an \textit{/api/measurements/measurements} entspricht also einem 
+HTTP Request an\\\\
+\textit{https://dd2.janlippemeier.de/api/measurements/measurements}. \\\\
+Um nun diese Anfragen, die sich an das Frontend richten, an das Backend weiterzuleiten wurde hier die Reverse-Proxy Funktion von Nginx genutzt. 
+Siehe hierzu den folgenden Ausschnitt der dafür notwendigen Konfigurationsdatei: ~\\
+
+
+\begin{lstlisting}[language={}, caption={Frontend Nginx Konfiguration}, captionpos=b, label={fig:Frontend Nginx}]
+location /api {
+ proxy_read_timeout 3600;
+ proxy_pass         http://load:4000;
+ rewrite /api/(.*) /$1  break;
+ proxy_redirect     off;
+
+ proxy_set_header Host              $host;
+ proxy_set_header X-Real-IP         $remote_addr;
+ proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+ proxy_set_header X-Client-Verify   SUCCESS;
+ proxy_set_header X-Client-DN       $ssl_client_s_dn;
+ proxy_set_header X-SSL-Subject     $ssl_client_s_dn;
+ proxy_set_header X-SSL-Issuer      $ssl_client_i_dn;
+ proxy_set_header X-Forwarded-Proto https;
+ proxy_connect_timeout 1800;
+ }
+    
+\end{lstlisting}~\\
+Mit der Definition \textit{location /api} wird bewirkt, dass alle HTTP-Requests an diesen Host, die mit \textit{/api} beginnen 
+an die API weitergeleitet werden, sodass über einen HTTP-Request aus dem JavaScript \cite{javascript} Code an \\\\
+\textit{/api/measurements/measurements}\\\\ 
+intern an \\\\
+\textit{http://load:4000/measurements/measurements}\\\\
+ weitergeleitet wird. Der Hostname \textit{load} wird hierbei genutzt um innerhalb des Docker-Netzwerkes an den Load-Balancer weiterzuleiten
