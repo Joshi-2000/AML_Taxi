@@ -2,12 +2,20 @@
 
 
 \subsection{Definitionen}
+Um Reinforcement Learning im Folgenden besser beschreiben zu können, ist zunächst die Klärung einiger Grundbegriffe nötig. Diese sind aus der englischen Sprache entstanden, auf eine Übersetzung dieser Begriffe in das Deutsche wurde verzichtet, um eine Vergleichbarkeit zu anderen Werken in diesem Themenbereich zu gewährleisten.\\
 
 \begin{enumerate}
-    \item Environment
-    \item Action
-    \item State
-    \item Reward
+    \item Agent\\
+    Der Agent ist die Instanz, welche Aktionen in einem Szenario/Umfeld ausführt und dafür eine Belohnung bekommt.
+    Environment
+    \item Environment\\
+    Das Environment ist, wie die deutsche Übersetzung schon vermutet lässt, die Umgebung in dem sich der Agent befindet. Das Environment legt dabei die grundlegenden Regeln fest und definiert, welche Aktionen möglich sind. Das Environment trägt somit ausschlaggebend zur Komplexität der zu lösenden Aufgabe bei. In vielen Fällen, so auch in den in dieser Ausarbeitung folgenden Versuchen, ist das Environment eine Simulation. Dies ermöglicht einen deutlich schnelleren Lernprozess, da jegliche Interaktion ohne nennenswerte Verzögerung ausgeführt werden kann. Bei komplexen Aufgabestellungen ist es so zudem möglich, mehrere Agenten parallel zu trainieren.
+    \item Action\\
+    Als Action wird eine Interaktion des Agent mit dem Environment beschrieben. Die Lösung eines Problems kann somit als Abfolge bestimmter Actions angesehen werden. Welche Actions der Agent ausführen kann, hängt dabei von den Grundregeln des Environments ab.
+    \item State\\
+    Der State ist der eindeutige und vollständige Beschreibung des Zustands, in welchem sich das Environment befindet. Aus technische Sicht ist der State meist ein Vektor, eine Matrix und ein Tensor, welcher alle relevanten Information des aktuellen Zustands enthält.
+    \item Reward\\
+    Der Reward ist die unmittelbare Belohnung, welche der Agent als Feedback zu einer Action erhält. In der Praxis ist dies ein numerischer Wert, welche entweder erhöht oder reduziert werden kann. Der Agent kann so für eine Action belohnt oder bestraft werden, dabei versucht er sein Handeln so auszurichten, dass er die größte mögliche Belohnung erreicht. Die Art und Weise, wie der Reward vergeben wird, bestimmt somit das Verhalten des Agent.
     \item Bellmann Equation?
     \item Markov Decision Process
     \item Exploration vs Exploitation
@@ -20,3 +28,4 @@
 \subsubsection{Q-Learning}
 
 \subsubsection{SARSA}
+
