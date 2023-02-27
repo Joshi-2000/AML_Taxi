@@ -1,7 +1,7 @@
 \section{Grundlagen}
 
 
-\subsection{Definitionen}
+\subsection{Definitionen} \label{Definitionen}
 Um Reinforcement Learning im Folgenden besser beschreiben zu können, ist zunächst die Klärung einiger Grundbegriffe nötig. Diese sind aus der englischen Sprache entstanden, auf eine Übersetzung dieser Begriffe in das Deutsche wurde verzichtet, um eine Vergleichbarkeit zu anderen Werken in diesem Themenbereich zu gewährleisten.
 
 \begin{enumerate}
@@ -39,7 +39,7 @@ Um Reinforcement Learning im Folgenden besser beschreiben zu können, ist zunäc
         \caption{Markov Decision Process}
         \label{MDP}
     \end{figure}
-    \item \textbf{Episode}\\
+    \item \label{itm:Episode} \textbf{Episode} \\
     Als Episode wird ein vollständiger Durchlauf während des Trainings bezeichnet. Jede Episode startet mit dem Anfangszustand des Environments und kann auf mehreren Wegen enden. Im besten Fall wird die Episode beendet, weil die gestellte Aufgabe vom Agent gelöst worden ist. In vielen Fällen wird eine Episode jedoch abgebrochen, weil die maximale Anzahl an Actions überschritten wurde. Eine solche Grenze wird implementiert, um sicherzustellen, dass das Training effektiv und effizient abläuft. Wenn keine Obergrenze festgelegt wird, kann der Agent endlos versuchen, das Ziel zu erreichen, ohne jemals erfolgreich zu sein. Zudem kann so verhindert werden, dass der Agent in einer Schleife von kleinen Belohnungen feststeckt. Die letzte Möglichkeit, wie eine Episode enden kann, ist von Environment definiert, in vielen Fällen kann der Agent durch bestimmte Fehlentscheidungen die Episode beendet.
     
     \item \textbf{Policy}\\
@@ -150,3 +150,18 @@ Die Aktualisierungsregel von SARSA ist wie folgt:
 \end{align}
 
 wobei der Unterschied in dem Term $\gamma Q(s',a')$ liegt. Denn hierbei wird wieder das epsilon-greedy Verfahren benutzt um den Action-Value zu bestimmen, im Vergleich zu dem maximalen Value, welcher bei Q-Learning gewählt wurde.
+
+\subsection{Hyperparameter}
+Unter Hyperparametern versteht man Einstellungen oder Konfigurationen für einen Maschine-Learning-Algorithmus, um das Verhalten und die Leistung zu steuern. Diese werden vor Beginn des Trainings festgelegt. Da die Wahl der Hyperparameter einen großen Einfluss auf die Fähigkeit der Modelle hat, ist es für den späteren Vergleich wichtig diese Parameter für jeden Algorithmus zu optimieren, um einen fairen Vergleich gewährleisten zu können.
+\begin{itemize}
+    \item \textbf{Anzahl an Episoden}\\
+    Wie bereits bei \ref*{Definitionen} \nameref{itm:Episode} beschrieben, stellt eine Episode einen vollständigen Durchlauf des Environments dar. Die Anzahl dieser Durchläufe währende des Trainingsprozesses wird als Hyperparameter festgelegt. Umso mehr Durchläufe der Agent zur Verfügung hat, um so häufiger kann er dazulernen und sich anpassen, somit hat dieser Hyperparameter einen großen Einfluss auf die Leistung des Agent. Die Anzahl der Episoden steht zudem im direkten Zusammenhang zu der für das Training benötigte Zeit, umso mehr Episoden durchlaufen werden, umso länger dauert der gesamte Trainingsprozess. Die optimale Anzahl der Episoden hängt von verschiedenen Faktoren wie der Komplexität der Umgebung, der Anzahl der States sowie dem verwendeten Lernalgorithmus ab. Bei zu wenigen Episoden ist der Algorithmus nicht in der Lage sein volles Potenzial zu entfalten. Zu viele Episoden können, besonders bei komplexen Modellen, zu Overfitting führen, dabei lernt der Agent die Umgebung auswendig und kann so nicht auf neue Situationen reagieren.
+    \item \textbf{Discount Faktor}\\
+    Der Discount Faktor bestimmt, wie stark der Agent eine Belohnung in der Zukunft gewichtet im Vergleich zu einer sofortigen Belohnung. Ein höherer Discount-Faktor bedeutet, dass der Agent die zukünftigen Belohnungen stärker gewichtet und daher eher langfristige Entscheidungen trifft. Ein niedrigerer Discount-Faktor führt dagegen zu kurzfristigeren Entscheidungen, da zukünftige Belohnungen weniger stark gewichtet werden. Der Wertebereich für diesen Hyperparameter liegt zwischen null und eins. Im ersten Moment könnte man jetzt denken, dass der höchstmögliche Discount Faktor der beste sei, da so der komplette Fokus auf dem Endergebnis der Episode liegt. Dies ist aber in den meisten Fällen nicht korrekt. Denn nicht jede Entscheidung hat einen Effekt, der bis zum Ende der Episode reicht, der Agent wäre dann nicht in der Lage solche Entscheidungen zu treffen. Zudem würden bei jeder Entscheidung eine enorme Menge an irrelevanten Informationen mit berücksichtigt, welche den Lernprozess enorm erschweren. Wie auch die maximale Anzahl an Episoden, hängt auch der optimale Wert für diesen Hyperparameter von der Komplexität der Problemstellung und dem verwendeten Lernalgorithmus ab. Auch die zeitliche Entfernung zwischen den Aktionen und den Belohnungen ist relevant.
+    \item \textbf{Learning Rate}\\
+    Die Learning Rate gibt an, wie stark das Verhalten des Agents nach jeder Episode aufgrund der Geschehnisse in der Episode angepasst wird. Bei einer hohen Learning Rate werden die Gewichte des Agent stark verändert, und somit das Verhalten stark verändert. Auf der einen Seite ist das gut, um das Training zu beschleunigen, und so schneller zum Ergebnis zu kommen. Gleichzeitig führt eine zu hohe Learning Rate dazu, dass das Modell instabil wird und keine Konvergenz erreicht, somit nie das Optimum erzielt. Eine zu niedrige Learning Rate führt dagegen dazu, dass das Modell zu langsam lernt und möglicherweise in einem lokalen Minimum stecken bleibt. Dies führt dazu, dass das Modell eine sehr lange Zeit zum Konvergieren benötigt oder möglicherweise nie die optimale Leistung erreicht. Um die Vorteile der hohen sowie der niedrigen Learning Rate nutzen zu können, wird eine abnehmende Learning Rate verwendet. Der Trainingsprozess wird mit einer hohen Learning Rate begonnen, um die Grundlagen schnell zu erlernen und lokale Minima zu vermeiden. Umso weiter das Training fortschreitet, umso mehr wird die Learning Rate reduziert, somit wird das Model stabiler und auf die optimale Leistung fein abgestimmt.
+
+    Es gibt verschiedene Methoden, um die Learning Rate zu reduzieren. Eine einfache Methode ist die Verwendung einer konstanten Decay-Rate, die angibt, um wie viel die Learning Rate nach jeder Episode oder nach einer bestimmten Anzahl von Iterationen reduziert wird. Eine weitere Methode ist die Verwendung von adaptiven Decay-Methoden, bei denen die Learning Rate dynamisch anhand von Metriken wie der Performance des Modells angepasst wird. Auch eine exponentielle Abnahme der Learning Rate ist möglich.
+    \item \textbf{Exploration Rate }\\
+
+\end{itemize}
