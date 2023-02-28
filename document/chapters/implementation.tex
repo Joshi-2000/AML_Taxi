@@ -55,7 +55,132 @@
 
 \end{enumerate}
 
-\subsection{Vergleichen von Paramtern}
+\subsection{Optimierung der Hyperparameter}
+Die Theoretischen Grundlage der Hyperparameter wurde bereits in \ref*{Def_Hyperparameter} \nameref{Def_Hyperparameter} erläutert, um konkreten Werte für die im Rahmen dieser Arbeit untersuchten Problem zu finden, wurden einige Versuche durchgeführt. 
+Als Ausgangslage wurde die in \nameref{tab:hyperBasic} dargestellten Werte angenommen. Im Folgenden werden diese initialen Werte anhand von Experimenten für die verschiedenen Algorithmen und Probleme optimiert.
+
+\begin{table}[h]
+    \caption{Hyperparameter Ausgangslage}
+    \label{tab:hyperBasic}
+    \centering
+    \rowcolors{2}{white}{lightgray} 
+    \begin{tabular}{>{\itshape}0l0l}\hline % used >{\itshape} in order to be able to remove the repeated occurences of \textit in the first column, used l type columns instead of c columns for a cleaner look, added small vertical space above and below the rows with the help of the cellspace package, removed all vertical lines
+    \textup{Paramater}          & Wert\\\hline
+    num\_episodes               & 1000\\
+    max\_steps\_per\_episode    & 1000\\
+    learning\_rate              & 0.1\\
+    discount\_rate              & 0.99\\
+    exploration\_rate           & 1\\
+    max\_exploration\_rate      & 1\\
+    min\_exploration\_rate      & 0.01\\
+    exploration\_decay\_rate    & 0.005\\\hline
+    \end{tabular}
+\end{table}
+
+\subsubsection{Anzahl an Episoden}
+Als optimale Anzahl an Episoden wird der Punkt gewählt, ab wann sich der Agent nicht mehr verbessert, so wird ein unnötig langes Training vermieden. 
+Dieser Punkt lässt sich sehr gut in einer grafischen Darstellung der erreichten Belohnung des Agenten im Vergleich zu den während des Trainings durchlaufenen Episoden ablesen. 
+Die Rohdaten aus dem Training sind aufgrund der Exploration sehr verrauscht, und der eigentliche Trainingsfortschritt ist nur schwer zu erkennen.
+Um die Grafik lesbarer zu machen wurde ein gleitender Durchschnitt auf die Daten angewandt, der Effekt dieser Operation wurde in der Abbildung \nameref{fig:NumOfEpisods_Taxi} veranschaulicht.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{.5\textwidth}
+      \centering
+      \includegraphics[width=1\linewidth]{Hyper_NumOfEpisods_Taxi_Raw}
+      \caption{Rohdaten}
+      \label{fig:NumOfEpisods_Raw}
+    \end{subfigure}%
+    \begin{subfigure}{.5\textwidth}
+      \centering
+      \includegraphics[width=1\linewidth]{Hyper_NumOfEpisods_Taxi}
+      \caption{Gleitender Durchschnitt}
+      \label{fig:NumOfEpisods_clean}
+    \end{subfigure}
+    \caption{Anwendung gleitender Durchschnitt}
+    \label{fig:NumOfEpisods_Taxi}
+\end{figure}
+
+
+\begin{itemize}
+    \item Q-Learning\\
+    Der in Abbildung \ref{fig:NumOfEpisods_clean} dargestellt Graph ziegt den Trainingsverlauf von Q-Learning bei dem Taxiproblem. Dort lässt sich erkennen das sich der Reward ab Episode 1300 kaum noch verändert, der Agent dementsprechend nicht mehr dazulernt. 
+    Dieser Punkt wird als optimalen Wert für die maximale Anzahl an Episode angenommen.
+
+    Um den optimalen Wert für das Cliff und Frozen Lake Problem zu ermitteln, wurden dieselben Schritte durchgeführt.
+    Das Cliff Problem wird schneller von Agent erlernt, daher kann das Training schon nach etwa 1000 Episoden beendet werden.
+    Der Trainingsverlauf des Frozen Lake Problem hat aufgrund der besonderen Rewardstruktur einen anderen Wertebereich, ein Wert von etwa 600 benötigten Episoden lässt sich trotzdem problemlos ablesen.
+    \item SARSA\\
+    
+    
+\end{itemize}
+
+\subsubsection{Maximale Anzahl an Steps pro Episode}
+Für die Festlegung dieses Hyperparameters wurde zunächst der Trainingsverlauf der Basiswerte mit dem Trainingsverlauf von deutlich erhöhten und reduzierten Werten verglichen.
+So konnte der Einfluss des Parameters analysiert werden und eine erste Tendenz wurde festgestellt. Darauf folgenden weitere Vergleiche, um den optimalen Wert zu bestimmen.
+\begin{itemize}
+    \item Q-Learning\\
+    Abbildung \ref{fig:MaxStepCount_1000vs500} stellt den Vergleich der Trainingsverläufe auf dem Taxiproblem zwischen den anfänglichen 1000 Steps zu 500 Steps dar.
+    Diese deutliche Reduzierung der maximalen Steps hat zu folge, dass der Agent länger ein unstabiles Verhalten aufzeigt, somit ist diese Veränderung nicht sinnvoll.
+    Abbildung \ref{fig:MaxStepCount_1000vs2000} zeigt den Effekt deiner Verdopplung des Wertes auf 2000. Zu erkennen ist, dass der Agent in der Mitte des Trainings schneller lernt, diesen Vorsprung verliert er gegen Ende des Trainings jedoch wieder.
+    Bei genauerer Betrachtung lässt sich zu dem feststellen, dass der Verlauf gegen Ende etwas weniger schwankt, und somit der Agent minimal bessere Performance nach dem Training zeigen wird. 
+    Eine weitere Erhöhung der maximalen Anzahl an Steps führte in den Versuchen allerdings nicht zu einer Verbesserung des Ergebnisses, verursachtet jedoch höhere Trainingszeiten.
+    Zweittausend wurde somit als optimalen Wert für diesen Hyperparameter für das Taxi-Problem ermittelt. 
+
+    \begin{figure}[H]
+        \centering
+        \begin{subfigure}{.5\textwidth}
+          \centering
+          \includegraphics[width=1\linewidth]{Hyper_StepsPerEpisode_1000vs500}
+          \caption{Vergleich 1000 vs 500}
+          \label{fig:MaxStepCount_1000vs500}
+        \end{subfigure}%
+        \begin{subfigure}{.5\textwidth}
+          \centering
+          \includegraphics[width=1\linewidth]{Hyper_StepsPerEpisode_1000vs2000}
+          \caption{Vergleich 1000 vs 2000}
+          \label{fig:MaxStepCount_1000vs2000}
+        \end{subfigure}
+        \caption{Auswirkung der maximalen Anzahl an Episode}
+        \label{fig:MaxStepCount}
+    \end{figure}
+
+    Für das Cliff Problem kann mit einem Wert von 750 schon das beste Ergebnis erzielt werden. 
+    Dies hängt mit der durchschnittlich niedrigeren Anzahl an Steps, die zum Lösen des Problems benötigt werden, zusammen. 
+    Bei der Untersuchung des Frozen Lake Problems konnte kein signifikanter Einfluss des Hyperparameters festgestellt werden, um Trainingszeit, die Trainingszeit gering zu halten wurde 500 als Wert festgelegt.
+    \item SARSA\\
+
+\end{itemize}
+\subsubsection{Learning Rate}
+Wie auch bei der Festlegung der maximalen Anzahl an Steps pro Episode wurde auch für die Learning Rate der initiale Wert verändert und die Auswirkungen anhand von Grafen analysiert.
+\begin{itemize}
+    \item Q-learning\\
+    Bei dem Vergleich verschiedener Learning Rates konnte festgestellt werden, dass Werte im Wertebereich zwischen 0,1 und 0,8 keinen Einfluss auf das Ergebnis des Trainings haben (vlg. Abbildung \ref{fig:learningRate_all}).
+    Es kommt zwar zu kleinen Unterschieden in der Mitte des Trainings, diese sind aber eher auf die zufällig Exploration zurückzuführen.
+    Eine zu kleine Learning Rate, wie Abbildung \ref{fig:learningRate_low} mit einem Wert von 0.01 veranschaulicht, führt jedoch zu einem längeren Trainingsverlauf.
+    Für die weiteren Versuche wurde ein Wert von 0,4 festgelegt, da er sich in der Mitte des untersuchten Intervalls befindet.
+
+    \begin{figure}[H]
+        \centering
+        \begin{subfigure}{.5\textwidth}
+          \centering
+          \includegraphics[width=1\linewidth]{Hyper_LearningRate_all}
+          \caption{Einfluss Learning Rate}
+          \label{fig:learningRate_all}
+        \end{subfigure}%
+        \begin{subfigure}{.5\textwidth}
+          \centering
+          \includegraphics[width=1\linewidth]{Hyper_LearningRate_001}
+          \caption{Wahl einer zu geringen Learning Rate}
+          \label{fig:learningRate_low}
+        \end{subfigure}
+        \caption{Auswirkung der Learning Rate}
+        \label{fig:learningRate_Q-Learning}
+    \end{figure}
+    \item SARSA
+\end{itemize}
+\subsubsection{Discount Faktor}
+
 
 \subsection{Vergleichen von Algorithmen}
 
