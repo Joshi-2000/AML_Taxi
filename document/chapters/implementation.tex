@@ -1,7 +1,7 @@
 \section{Implementierung}
 
 
-\subsection{Probleme}
+\subsection{Probleme} \label{Probleme}
 
 \begin{enumerate}
     \item Taxi\\
@@ -32,5 +32,85 @@
     
 \end{enumerate}
 
-\subsection{Vergleichen von Algorithmen und Paramtern}
+\subsection{Vergleichen von Paramtern}
 
+\subsection{Vergleichen von Algorithmen}
+
+Nach dem im vorangegangen Kapitel die Implementation des Vergleichens der Hyperparameter beschrieben wurde, befasst sich dieser Abschnitt mit dem Verlgeichen der beiden Algorithmen Q-Learning und SARSA. 
+Um den bestmöglichen Vergleich zu gewährleisten wurden geeignete Parameter für beide Algorithmen und die jeweiligen Probleme gewählt. Bei der Analyse wurden alle drei Probleme, welche in \ref{Probleme} bereits erläutert wurden, angewendet.
+
+
+\begin{itemize}
+    \item Bei dem Taxiproblem wurden die in Tabelle \ref{tab:Taxi} dargestellten Paramater für einen sinnvollen Vergleich der beiden Algorithmen gewählt. Das Taxi-Problem hat im Vergleich zu den anderen Algorithmen viele unterschiedliche States, daher brauche es eine hohe Anzahl an Episoden um diese zu lernen bzw. zu optimieren.
+    
+    \item Bei dem Cliffproblem handelt es sich um ein einfacheres Problem, daher wurden die Anzahl der Episoden etwas zurückgesetzt. Die für dieses Problem genutzten Parameter sind in Tabelle \ref{tab:Cliff} beschrieben.
+    
+    Die Besonderheit bei dem Cliffproblem ist, dass es lediglich negative Belohnungen gibt und die Klippe eine vielfach höhere Bestrafung hat, als ein normaler Schritt, welcher nicht die Klippe hinunter führt. 
+
+    \item Bei dem Frozen Lake Problem handelt es sich widerum um ein komplexeres Problem, welches mehr Episoden als das Cliffproblem benötigt, um zu einem Optimum zu konvergieren. Wichtig bei diesem Problem ist ebenfalls eine höhere Anzahl an maximalen Steps, bevor der Algorithmus in die nächste Episode geht. 
+    Der Grund dafür ist, dass es lediglich für das Zielfeld als Belohnung +1 gibt, während alle anderen Aktionen im Spiel mit dem Reward 0 belegt sind. Somit muss der Agent es über die Exploration erstmal schaffen das Zielffeld zu entdecken, um sich dann im nachhinein dafür zu optimieren. 
+    Erschwert wird das ganze zusätzlich durch die Tatsache, dass neben der Exploration Rate (epsilon) auch das Environment für zufällige Bewegungen sorgt. So ist die Wahrscheinlichkeit, wenn der Agent nach links gehen möchte lediglich P(links) = 1/3 und die Chancen für die Richtungen oben und unten auch jeweils P(oben) = 1/3 und P(unten) = 1/3. 
+    Die Tabelle \ref{tab:FrozenLake} führt die genutzten Parameter für den Vergleich von Q-Learning und SARSA dieses Problems auf.
+   
+    \begin{table}[!htb]
+        % \caption{Global caption}
+        \begin{minipage}{.5\linewidth}
+            \caption{Taxi Paramater}
+            \label{tab:Taxi}
+            \centering
+            \rowcolors{2}{white}{lightgray} 
+            \begin{tabular}{>{\itshape}0l0l}\hline % used >{\itshape} in order to be able to remove the repeated occurences of \textit in the first column, used l type columns instead of c columns for a cleaner look, added small vertical space above and below the rows with the help of the cellspace package, removed all vertical lines
+            \textup{Paramater}          & Wert\\\hline
+            num\_episodes               & 3000\\
+            max\_steps\_per\_episode    & 1000\\
+            learning\_rate              & 0.1\\
+            discount\_rate              & 0.99\\
+            exploration\_rate           & 1\\
+            max\_exploration\_rate      & 1\\
+            min\_exploration\_rate      & 0.05\\
+            exploration\_decay\_rate    & 0.005\\\hline
+            \end{tabular}
+        \end{minipage}%
+        \begin{minipage}{.5\linewidth}
+            \caption{Cliff Paramater}
+            \label{tab:Cliff}
+            \centering
+            \rowcolors{2}{white}{lightgray} 
+            \begin{tabular}{>{\itshape}0l0l}\hline % used >{\itshape} in order to be able to remove the repeated occurences of \textit in the first column, used l type columns instead of c columns for a cleaner look, added small vertical space above and below the rows with the help of the cellspace package, removed all vertical lines
+            \textup{Paramater}          & Wert\\\hline
+            num\_episodes               & 1500\\
+            max\_steps\_per\_episode    & 1000\\
+            learning\_rate              & 0.1\\
+            discount\_rate              & 0.99\\
+            exploration\_rate           & 1\\
+            max\_exploration\_rate      & 1\\
+            min\_exploration\_rate      & 0.05\\
+            exploration\_decay\_rate    & 0.005\\\hline
+            \end{tabular}
+        \end{minipage} 
+    \end{table}
+
+    \begin{table}[h]
+        \caption{Frozen Lake Paramater}
+        \label{tab:FrozenLake}
+        \centering
+        \rowcolors{2}{white}{lightgray} 
+        \begin{tabular}{>{\itshape}0l0l}\hline % used >{\itshape} in order to be able to remove the repeated occurences of \textit in the first column, used l type columns instead of c columns for a cleaner look, added small vertical space above and below the rows with the help of the cellspace package, removed all vertical lines
+        \textup{Paramater}          & Wert\\\hline
+        num\_episodes               & 2000\\
+        max\_steps\_per\_episode    & 10000\\
+        learning\_rate              & 0.1\\
+        discount\_rate              & 0.99\\
+        exploration\_rate           & 1\\
+        max\_exploration\_rate      & 1\\
+        min\_exploration\_rate      & 0.05\\
+        exploration\_decay\_rate    & 0.005\\\hline
+        \end{tabular}
+    \end{table}
+\end{itemize}
+
+Zum Vergleich der Algorithmen wurden die Belohnungen und Steps während des Trainings aufgenommen und anschließend in Plots anschaulich dargestellt. 
+Dabei wurde je nach Problem eine logarithmische Skalar auf der y-Achse genutzt, um die Daten anschaulicher zu machen. Zusätzlich wird ein Rolling Window Ansatz gewählt, sodass immer 15 Werte zusammengefasst werden. Dies sorgt dafür das einzelne Peaks zwar weniger auffallen, dafür der Gesamttrend im Verlauf der Trainingsepisoden aber besser zu erkennen ist.
+
+
+    
