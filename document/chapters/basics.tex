@@ -6,7 +6,7 @@ Um Reinforcement Learning im Folgenden besser beschreiben zu können, ist zunäc
 
 \begin{enumerate}
     \item \textbf{Markov Decision Process}\\
-    Ein Markov Decision Process (MDP) ist ein formales Modell, das zur Beschreibung von Entscheidungsproblemen verwendet wird, bei denen eine Entscheidungsträgerin oder ein Entscheidungsträger (oft als Agent bezeichnet) in einer Umgebung handelt und dabei versucht, eine bestimmte Zielsetzung zu erreichen. Ein MDP basiert auf dem Konzept eines Markov-Prozesses, der ein stochastischer Prozess ist, bei dem der zukünftige Zustand nur vom gegenwärtigen Zustand abhängt und nicht von früheren Zuständen.
+    Ein Markov Decision Process (MDP) \cite{builtinUnderstandingMarkov} ist ein formales Modell, das zur Beschreibung von Entscheidungsproblemen verwendet wird, bei denen eine Entscheidungsträgerin oder ein Entscheidungsträger (oft als Agent bezeichnet) in einer Umgebung handelt und dabei versucht, eine bestimmte Zielsetzung zu erreichen. Ein MDP basiert auf dem Konzept eines Markov-Prozesses, der ein stochastischer Prozess ist, bei dem der zukünftige Zustand nur vom gegenwärtigen Zustand abhängt und nicht von früheren Zuständen.
 
     Ein MDP besteht aus den folgenden Komponenten:
 
@@ -43,14 +43,14 @@ Um Reinforcement Learning im Folgenden besser beschreiben zu können, ist zunäc
     Als Episode \cite{lesswrongWhatTraining} wird ein vollständiger Durchlauf während des Trainings bezeichnet. Jede Episode startet mit dem Anfangszustand des Environments und kann auf mehreren Wegen enden. Im besten Fall wird die Episode beendet, weil die gestellte Aufgabe vom Agent gelöst worden ist. In vielen Fällen wird eine Episode jedoch abgebrochen, weil die maximale Anzahl an Actions überschritten wurde. Eine solche Grenze wird implementiert, um sicherzustellen, dass das Training effektiv und effizient abläuft. Wenn keine Obergrenze festgelegt wird, kann der Agent endlos versuchen, das Ziel zu erreichen, ohne jemals erfolgreich zu sein. Zudem kann so verhindert werden, dass der Agent in einer Schleife von kleinen Belohnungen feststeckt. Die letzte Möglichkeit, wie eine Episode enden kann, ist von Environment definiert, in vielen Fällen kann der Agent durch bestimmte Fehlentscheidungen die Episode beendet.
     
     \item \textbf{Policy}\\
-    Im Reinforcement Learning bezeichnet eine Policy {$\bm{\pi}$} eine Funktion, die Entscheidungen trifft, um eine bestimmte Aufgabe zu lösen. Eine Policy entscheidet, welche Aktion ein Agent in einer bestimmten Situation ausführen soll, basierend auf den Informationen, die der Agent in der Vergangenheit gesammelt hat.
+    Im Reinforcement Learning bezeichnet eine Policy {$\bm{\pi}$} \cite{mediumReinforcementLearningPolicyValue} eine Funktion, die Entscheidungen trifft, um eine bestimmte Aufgabe zu lösen. Eine Policy entscheidet, welche Aktion ein Agent in einer bestimmten Situation ausführen soll, basierend auf den Informationen, die der Agent in der Vergangenheit gesammelt hat.
 
     Die Policy wird durch das Optimierungsproblem des Reinforcement Learning bestimmt, das darin besteht, die optimale Strategie zu finden, um die Belohnung des Agents zu maximieren. Die optimale Policy ist diejenige, die in jeder Situation die Aktion empfiehlt, die die höchste erwartete Belohnung ergibt.
 
     Es gibt verschiedene Arten von Policies im Reinforcement Learning, wie beispielsweise deterministische Policies, stochastische Policies und epsilon-greedy Policies. Eine deterministische Policy gibt für jede Situation genau eine Aktion vor, während eine stochastische Policy eine Wahrscheinlichkeitsverteilung über alle Aktionen in einer Situation bereitstellt. Die epsilon-greedy Policy ist eine Mischung aus deterministischen und stochastischen Policies und wählt die Aktion mit der höchsten erwarteten Belohnung mit einer Wahrscheinlichkeit von 1-epsilon und eine zufällige Aktion mit einer Wahrscheinlichkeit von epsilon aus.
     
     \item \textbf{Value Function}\\
-    Bei dem Begriff Value Function handelt es sich um eine eine Funktion, die den erwarteten Wert einer bestimmten State-Action-Kombination oder eines States wiedergibt. Der Wert gibt an, wie nützlich es ist, sich in diesem State oder dieser Kombination zu befinden, um das Gesamtziel zu erreichen, also die maximale Belohnung zu erhalten.
+    Bei dem Begriff Value Function \cite{mediumReinforcementLearningPolicyValue} handelt es sich um eine eine Funktion, die den erwarteten Wert einer bestimmten State-Action-Kombination oder eines States wiedergibt. Der Wert gibt an, wie nützlich es ist, sich in diesem State oder dieser Kombination zu befinden, um das Gesamtziel zu erreichen, also die maximale Belohnung zu erhalten.
 
     Die Value Function kann verwendet werden, um die optimale Policy zu finden, die die maximale Belohnung im Laufe der Zeit liefert. In Reinforcement Learning gibt es zwei Arten von Value Functions: Die State-Value Function und die Action-Value Function.
     
@@ -95,7 +95,7 @@ Um Reinforcement Learning im Folgenden besser beschreiben zu können, ist zunäc
 
 
         \item \textit{Bellman Optimality Equation}\\
-        Die Bellman Optimality Equation für die Action-Value Function beschreibt den optimalen Wert eines State-Action Paares \textbf{\textit{(s,a)}} unter der Annahme, dass der Agent die optimale Policy verfolgt.
+        Die Bellman Optimality Equation \cite{floydhubIntroductionQLearning} für die Action-Value Function beschreibt den optimalen Wert eines State-Action Paares \textbf{\textit{(s,a)}} unter der Annahme, dass der Agent die optimale Policy verfolgt.
 
         \begin{align}
         q_{*}(s,a)=E[R_{t+1}+\gamma \max_{a'} q_{*}(s', a')]
@@ -106,7 +106,7 @@ Um Reinforcement Learning im Folgenden besser beschreiben zu können, ist zunäc
 
     
     \item \textbf{Exploration vs Exploitation} \label{ExpvsExp}\\
-    Exploration bezieht sich auf die Strategie des Agents, neue Entscheidungen zu erkunden und zu lernen, indem er Aktionen ausprobiert, die er noch nicht ausprobiert hat. Der Agent versucht, neue Möglichkeiten zu erforschen, um mehr über die Umgebung zu erfahren.
+    Exploration \cite{towardsdatascienceExplorationReinforcement} bezieht sich auf die Strategie des Agents, neue Entscheidungen zu erkunden und zu lernen, indem er Aktionen ausprobiert, die er noch nicht ausprobiert hat. Der Agent versucht, neue Möglichkeiten zu erforschen, um mehr über die Umgebung zu erfahren.
 
     Exploitation hingegen bezieht sich auf die Strategie des Agents, Entscheidungen auf der Grundlage der bisherigen Erfahrungen zu treffen, um den maximalen Gewinn zu erzielen. Mit anderen Worten, der Agent nutzt die bisherigen Erfahrungen, um die Aktion auszuwählen, die ihm die höchste Belohnung in der Vergangenheit gegeben hat.
     
