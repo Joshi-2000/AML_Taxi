@@ -105,7 +105,7 @@ Um Reinforcement Learning im Folgenden besser beschreiben zu können, ist zunäc
     \end{enumerate}
 
     
-    \item \textbf{Exploration vs Exploitation}\\
+    \item \textbf{Exploration vs Exploitation} \label{ExpvsExp}\\
     Exploration bezieht sich auf die Strategie des Agents, neue Entscheidungen zu erkunden und zu lernen, indem er Aktionen ausprobiert, die er noch nicht ausprobiert hat. Der Agent versucht, neue Möglichkeiten zu erforschen, um mehr über die Umgebung zu erfahren.
 
     Exploitation hingegen bezieht sich auf die Strategie des Agents, Entscheidungen auf der Grundlage der bisherigen Erfahrungen zu treffen, um den maximalen Gewinn zu erzielen. Mit anderen Worten, der Agent nutzt die bisherigen Erfahrungen, um die Aktion auszuwählen, die ihm die höchste Belohnung in der Vergangenheit gegeben hat.
@@ -163,5 +163,8 @@ Unter Hyperparametern versteht man Einstellungen oder Konfigurationen für einen
 
     Es gibt verschiedene Methoden, um die Learning Rate zu reduzieren. Eine einfache Methode ist die Verwendung einer konstanten Decay-Rate, die angibt, um wie viel die Learning Rate nach jeder Episode oder nach einer bestimmten Anzahl von Iterationen reduziert wird. Eine weitere Methode ist die Verwendung von adaptiven Decay-Methoden, bei denen die Learning Rate dynamisch anhand von Metriken wie der Performance des Modells angepasst wird. Auch eine exponentielle Abnahme der Learning Rate ist möglich.
     \item \textbf{Exploration Rate }\\
+    Die Exploration Rate wurde bereits in dem Abschnitt \nameref{ExpvsExp} erwähnt und ist wie dort beschrieben dafür zuständig, dass der Agent während des Training das Environment zufällig erkundet. Würde es dies nicht geben, würde der Agent immer dem vermeintlich besten Weg folgen und keine anderen Optionen in Betracht ziehen. Die Exploration Rate ist ein Wert zwischen 0 und 1 und funktioniert so, dass vor jeder Aktion des Agenten eine zufällige Zahl ebenfalls zwischen 0 und 1 generiert wird. Ist diese Zahl größer als die Exploration Rate, wählt der Agent die Aktion mit dem höchsten Value, ist sie kleiner wird eine zufällige Aktion ausgewählt. Dies ermöglicht es dem Agenten neue States und Aktionen zu explorieren und so über einen längeren Zeitraum auch wirklich das Optimum zu finden.
+
+    In der Praxis wird die Exploration Rate häufig über den Zeitraum des Trainings verringert. Dies ist sinnvoll, da der Agent zu Beginn des Trainings das Environment noch gar nicht kennt und somit eine hohe Explorationsrate notwendig ist, damit er die vielen unterschiedlichen States kennenlernen kann. Im späteren Verlauf des Trainings kennt der Agent bereits die meisten States und wählt nur zu einer geringen Wahrscheinlichkeit andere Aktionen, welche womöglich doch besser sein könnten.
 
 \end{itemize}
