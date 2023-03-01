@@ -1,12 +1,134 @@
 \section{Ergebnisse}
 
-\subsection{Vergleich Paramater}
-\subsubsection{Taxi}
+\subsection{Optimierung der Hyperparameter}
 
-\subsubsection{Cliff}
+\subsubsection{Anzahl an Episoden}
+\begin{itemize}
+    \item Q-Learning\\
+    Der in Abbildung \ref{fig:NumOfEpisods_Taxi} dargestellt Graph ziegt den Trainingsverlauf von Q-Learning bei dem Taxiproblem. Dort lässt sich erkennen das sich der Reward ab Episode 1300 kaum noch verändert, der Agent dementsprechend nicht mehr dazulernt. 
+    Dieser Punkt wird als optimalen Wert für die maximale Anzahl an Episode angenommen.
 
-\subsubsection{Frozen Lake}
+    Um den optimalen Wert für das Cliff und Frozen Lake Problem zu ermitteln, wurden dieselben Schritte durchgeführt.
+    Das Cliff Problem wird schneller von Agent erlernt, daher kann das Training schon nach etwa 1000 Episoden beendet werden.
+    Der Trainingsverlauf des Frozen Lake Problem hat aufgrund der besonderen Rewardstruktur einen anderen Wertebereich (vgl. Abbildung \ref{fig:NumOfEpisods_Lake} ), ein Wert von etwa 600 benötigten Episoden lässt sich trotzdem problemlos ablesen.
+    
+    \begin{figure}[H]
+      \centering
+      \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[width=1\linewidth]{Hyper_NumOfEpisods_Taxi}
+        \caption{Trainingsverlauf Taxiproblem}
+        \label{fig:NumOfEpisods_Taxi}
+      \end{subfigure}%
+      \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[width=1\linewidth]{Hyper_NumOfEpisods_Lake}
+        \caption{Trainingsverlauf Frozen Lake}
+        \label{fig:NumOfEpisods_Lake}
+      \end{subfigure}
+      \caption{Ermittlung der optimalen Anzahl an Episoden}
+      \label{fig:NumOfEpisods_Taxi_Q-Learning}
+  \end{figure}
 
+    \item SARSA\\
+    
+    %Grafik einfühgen 
+\end{itemize}
+
+\subsubsection{Maximale Anzahl an Steps pro Episode}
+\begin{itemize}
+    \item Q-Learning\\
+    Abbildung \ref{fig:MaxStepCount_1000vs500} stellt den Vergleich der Trainingsverläufe auf dem Taxiproblem zwischen den anfänglichen 1000 Steps zu 500 Steps dar.
+    Diese deutliche Reduzierung der maximalen Steps hat zu folge, dass der Agent länger ein unstabiles Verhalten aufzeigt, somit ist diese Veränderung nicht sinnvoll.
+    Abbildung \ref{fig:MaxStepCount_1000vs2000} zeigt den Effekt deiner Verdopplung des Wertes auf 2000. Zu erkennen ist, dass der Agent in der Mitte des Trainings schneller lernt, diesen Vorsprung verliert er gegen Ende des Trainings jedoch wieder.
+    Bei genauerer Betrachtung lässt sich zu dem feststellen, dass der Verlauf gegen Ende etwas weniger schwankt, und somit der Agent minimal bessere Performance nach dem Training zeigen wird. 
+    Eine weitere Erhöhung der maximalen Anzahl an Steps führte in den Versuchen allerdings nicht zu einer Verbesserung des Ergebnisses, verursachtet jedoch höhere Trainingszeiten.
+    Zweittausend wurde somit als optimalen Wert für diesen Hyperparameter für das Taxi-Problem ermittelt. 
+
+    \begin{figure}[H]
+        \centering
+        \begin{subfigure}{.5\textwidth}
+          \centering
+          \includegraphics[width=1\linewidth]{Hyper_StepsPerEpisode_1000vs500}
+          \caption{Vergleich 1000 vs 500}
+          \label{fig:MaxStepCount_1000vs500}
+        \end{subfigure}%
+        \begin{subfigure}{.5\textwidth}
+          \centering
+          \includegraphics[width=1\linewidth]{Hyper_StepsPerEpisode_1000vs2000}
+          \caption{Vergleich 1000 vs 2000}
+          \label{fig:MaxStepCount_1000vs2000}
+        \end{subfigure}
+        \caption{Auswirkung der maximalen Anzahl an Episode}
+        \label{fig:MaxStepCount}
+    \end{figure}
+
+    Für das Cliff Problem kann mit einem Wert von 750 schon das beste Ergebnis erzielt werden. 
+    Dies hängt mit der durchschnittlich niedrigeren Anzahl an Steps, die zum Lösen des Problems benötigt werden, zusammen. 
+    Bei der Untersuchung des Frozen Lake Problems konnte kein signifikanter Einfluss des Hyperparameters festgestellt werden, um Trainingszeit, die Trainingszeit gering zu halten wurde 500 als Wert festgelegt.
+    \item SARSA\\
+
+\end{itemize}
+\subsubsection{Learning Rate}
+\begin{itemize}
+    \item Q-Learning\\
+    Bei dem Vergleich verschiedener Learning Rates konnte festgestellt werden, dass Werte im Wertebereich zwischen 0,1 und 0,8 keinen Einfluss auf das Ergebnis des Trainings haben (vlg. Abbildung \ref{fig:learningRate_all}).
+    Es kommt zwar zu kleinen Unterschieden in der Mitte des Trainings, diese sind aber eher auf die zufällig Exploration zurückzuführen.
+    Eine zu kleine Learning Rate, wie Abbildung \ref{fig:learningRate_low} mit einem Wert von 0.01 veranschaulicht, führt jedoch zu einem längeren Trainingsverlauf.
+    Für die weiteren Versuche wurde ein Wert von 0,4 festgelegt, da er sich in der Mitte des untersuchten Intervalls befindet.
+
+    \begin{figure}[H]
+        \centering
+        \begin{subfigure}{.5\textwidth}
+          \centering
+          \includegraphics[width=1\linewidth]{Hyper_LearningRate_all}
+          \caption{Einfluss Learning Rate}
+          \label{fig:learningRate_all}
+        \end{subfigure}%
+        \begin{subfigure}{.5\textwidth}
+          \centering
+          \includegraphics[width=1\linewidth]{Hyper_LearningRate_001}
+          \caption{Wahl einer zu geringen Learning Rate}
+          \label{fig:learningRate_low}
+        \end{subfigure}
+        \caption{Auswirkung der Learning Rate}
+        \label{fig:learningRate_Q-Learning}
+    \end{figure}
+    \item SARSA
+\end{itemize}
+\subsubsection{Discount Faktor}
+\begin{itemize}
+    \item Q-Learning\\
+    Eine Reduzierung der Discount Rate auf 0,6 führte bei Q-Learning und dem Taxiproblem zu einem konstanteren Trainingsverlauf (vgl. Abbildung x).
+    Die Auswirkung einer weiteren Reduzierung des Parameters auf 0,2 ist in Abbildung x zu entnehmen und führte zur leichten Verschlechterung des Ergebnisses.
+    Da der Wert von 0,6 die besten Ergebnisse lieferte, wird dieser Wert für die folgenden Versuche verwendet.
+    \begin{figure}[H]
+        \centering
+        \begin{subfigure}{.5\textwidth}
+          \centering
+          \includegraphics[width=1\linewidth]{Hyper_DiscountRate_06}
+          \caption{Vergleich zwischen 0,99 vs 0,60}
+          \label{fig:DiscountRate06}
+        \end{subfigure}%
+        \begin{subfigure}{.5\textwidth}
+          \centering
+          \includegraphics[width=1\linewidth]{Hyper_DiscountRate_02}
+          \caption{Vergleich zwischen 0,99 vs 0,20}
+          \label{fig:DiscountRate02}
+        \end{subfigure}
+        \caption{Auswirkung der Discount Rate}
+        \label{fig:DiscountRate_Q-Learning}
+    \end{figure}
+    Bei dem Cliff Problem führt eine Absenkung des Wertes zu einer minimalen Verschlechterung der Ergebnisse, somit wird der Ausgangswert als Optimal angenommen. 
+    Dieser hohe Initialwert verursachte bei dem Lake Problem häufiger einen Leistungseinbruch, der Agent war dann nicht mehr in der Lage, die Aufgabenstellung zu lösen.
+    Durch eine Reduzierung des Wertes auf 0,2 konnte dieses Problem behoben werden.
+    \item SARSA\\
+\end{itemize}
+\subsubsection{Exploration Rate}
+\begin{itemize}
+  \item Q_Learning\\
+  \item SARSA\\
+\end{itemize}
 \subsection{Vergleich Algorithmen}
 
 Im folgenden werden die Ergebnisse beschrieben, welche bei dem Vergleichen der Algorithmen Q-Learning und SARSA entstanden sind.
