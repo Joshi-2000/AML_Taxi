@@ -31,8 +31,15 @@
   \end{figure}
 
     \item SARSA\\
-    
-    %Grafik einfühgen 
+    Das Verhalten von SARSA auf dem Taxiproblem ist sehr indentisch zu dem von Q-Learning, daher sind ist auch hier ein Wert von 1300 optimal.
+    Bei dem Cliffproblem konvergiert der Reward ab 600 Epochen und beim FrozenLake Problem erzielt der Agent ab 2000 Epochen keinen Fortschritt mehr.
+    In Abbildung \ref(fig:SARSA_NumOfEpisods) ist der Traingsverlauf von dem Cliffproblem (blau) und dem ForzenLake Problem (Orange) zu dargestellt.
+    \begin{figure}[H]
+      \centering
+      \includegraphics[scale=0.7]{Hyper_NumOfEpochs_Multi_SARSA}
+      \caption{SARSA Traingsverlauf}
+      \label{fig:SARSA_NumOfEpisods}
+  \end{figure}
 \end{itemize}
 
 \subsubsection{Maximale Anzahl an Steps pro Episode}
@@ -67,6 +74,8 @@
     Dies hängt mit der durchschnittlich niedrigeren Anzahl an Steps, die zum Lösen des Problems benötigt werden, zusammen. 
     Bei der Untersuchung des Frozen Lake Problems konnte kein signifikanter Einfluss des Hyperparameters festgestellt werden, um Trainingszeit, die Trainingszeit gering zu halten wurde 500 als Wert festgelegt.
     \item SARSA\\
+    
+
 
 \end{itemize}
 \subsubsection{Learning Rate}
@@ -99,8 +108,8 @@
 \subsubsection{Discount Faktor}
 \begin{itemize}
     \item Q-Learning\\
-    Eine Reduzierung der Discount Rate auf 0,6 führte bei Q-Learning und dem Taxiproblem zu einem konstanteren Trainingsverlauf (vgl. Abbildung x).
-    Die Auswirkung einer weiteren Reduzierung des Parameters auf 0,2 ist in Abbildung x zu entnehmen und führte zur leichten Verschlechterung des Ergebnisses.
+    Eine Reduzierung der Discount Rate auf 0,6 führte bei Q-Learning und dem Taxiproblem zu einem konstanteren Trainingsverlauf (vgl. Abbildung \ref{Hyper_DiscountRate_06}).
+    Die Auswirkung einer weiteren Reduzierung des Parameters auf 0,2 ist Abbildung \ref{fig:DiscountRate02} zu entnehmen und führte zur leichten Verschlechterung des Ergebnisses.
     Da der Wert von 0,6 die besten Ergebnisse lieferte, wird dieser Wert für die folgenden Versuche verwendet.
     \begin{figure}[H]
         \centering
@@ -127,10 +136,35 @@
 \subsubsection{Exploration Rate}
 
 \begin{itemize}
-    \item Q-Learning\\
-    \item SARSA\\
+  \item Q-Learning\\
+  In Experimenten mit dem Taxiproblem hat sich gezeigt, dass eine Reduzierung der Exploration Decay Rate zu einem längeren Training führt, ohne dabei am Ende mehr Stabilität zu bringen (vgl. Abbildung \ref{ExplorationDecayRate_low}).
+  Das Erhöhen hingegen beschleunigt das Training minimal (vgl. Abbildung \ref{ExplorationDecayRate_high}).
+  Um ein schnelles Training zu erreichen und zeitlich sicherzustellen, dass der Agent alle möglichen Wege erkundet, wurde ein Wert von 0,01 für dieses Hyperparameter gewählt.
+  Das Verhalten von Q-Learning auf dem Cliff Problem ist sehr identisch, daher ist auch dort 0,01 ein gut geeigneter Wert.
+  Durch den hohen, auf Zufall basierender, Einfluss des Environments bei dem Frozen Lake Problems ist der Einfluss der Exploration Decay Rate nur in Extremfällen feststellbar.
+  Daher wurde keine Anpassung des Standardwertes vorgenommen.
+  \item SARSA\\
+  \begin{figure}[H]
+    \centering
+    \begin{subfigure}{.5\textwidth}
+      \centering
+      \includegraphics[width=1\linewidth]{Hyper_ExplorationDecayRate_001}
+      \caption{Auswirkung niedriger Exploration Decay Rate}
+      \label{fig:ExplorationDecayRate_low}
+    \end{subfigure}%
+    \begin{subfigure}{.5\textwidth}
+      \centering
+      \includegraphics[width=1\linewidth]{Hyper_ExplorationDecayRate_01}
+      \caption{Vergleich zwischen 0,99 vs 0,20}
+      \label{fig:ExplorationDecayRate_high}
+    \end{subfigure}
+    \caption{Auswirkung der Exploration Decay Rate}
+    \label{fig:ExplorationDecayRate_Q-Learning}
+  \end{figure}
 \end{itemize}
-
+Eine Reduzierung der minimal Exploration Rate beschleunigt bei allen drei Problemen den Trainingsvorgang.
+Wird dieser Wert jedoch zu gering gewählt, tritt schon während des Trainings der Punkt ein, an dem der Agent ausschließlich Exploitation betreibt und somit nicht mehr lernt.
+Um dieses Risiko zu vermeiden, wurde auf eine weitere Absenkung der Minimalgrenze verzichtet.
 \subsection{Vergleich Algorithmen}
 
 Im folgenden werden die Ergebnisse beschrieben, welche bei dem Vergleichen der Algorithmen Q-Learning und SARSA entstanden sind.
