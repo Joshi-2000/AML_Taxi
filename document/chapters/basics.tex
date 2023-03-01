@@ -63,7 +63,7 @@ Um Reinforcement Learning im Folgenden besser beschreiben zu können, ist zunäc
     Im weiteren Verlauf der Arbeit wurde sich mit der Action-Value Function \textbf{\textit{Q}} und dem Temporal Difference Learning auseinandergesetzt.
     
     \item \textbf{Temporal Difference Learning}\\
-    Temporal Difference (TD) Learning ist eine Methode des Reinforcement Learning, die es einem Agenten ermöglicht, aus Erfahrungen zu lernen, indem er die erzielte Belohnung mit der erwarteten Belohnung vergleicht. Im Gegensatz zu Monte-Carlo-Methoden, die die Gesamtrabatte aus der Erfahrung berechnen, werden bei TD-Learning die Value Functions schrittweise durch den Vergleich von aufeinanderfolgenden Schätzungen aktualisiert.
+    Temporal Difference (TD) Learning \cite{mediumTemporalDifference} ist eine Methode des Reinforcement Learning, die es einem Agenten ermöglicht, aus Erfahrungen zu lernen, indem er die erzielte Belohnung mit der erwarteten Belohnung vergleicht. Im Gegensatz zu Monte-Carlo-Methoden, die die Gesamtrabatte aus der Erfahrung berechnen, werden bei TD-Learning die Value Functions schrittweise durch den Vergleich von aufeinanderfolgenden Schätzungen aktualisiert.
 
     Die TD-Learning Methode verwendet dabei die Bellman-Gleichungen, um die Value Functions zu aktualisieren. Diese Gleichungen sind eine Reihe von Gleichungen, die die Beziehung zwischen den Zustands- und Aktionswerten und der optimalen Policy beschreiben.
 
@@ -113,7 +113,7 @@ Um Reinforcement Learning im Folgenden besser beschreiben zu können, ist zunäc
     Ein Gleichgewicht zwischen Exploration und Exploitation ist wichtig, um optimale Entscheidungen zu treffen. Wenn der Agent zu sehr auf Exploration setzt, wird er immer wieder neue Entscheidungen ausprobieren und keine optimale Entscheidung treffen, um den maximalen Gewinn zu erzielen. Wenn der Agent hingegen zu sehr auf Exploitation setzt, wird er sich auf die Entscheidungen konzentrieren, die ihm in der Vergangenheit den höchsten Gewinn gebracht haben, und nicht in der Lage sein, neue Entscheidungen zu erkunden, die möglicherweise noch höhere Gewinne erzielen können.
     
     Daher verwenden Reinforcement Learning-Algorithmen oft eine Strategie namens epsilon-greedy-Strategie, bei der der Agent mit einer Wahrscheinlichkeit von epsilon eine zufällige Aktion auswählt, um Exploration durchzuführen, und mit einer Wahrscheinlichkeit von 1 - epsilon eine Aktion auswählt, die bisher die höchste Belohnung erzielt hat, um Exploitation durchzuführen. Auf diese Weise kann der Agent gleichzeitig erkunden und von seinen bisherigen Erfahrungen profitieren, um optimale Entscheidungen zu treffen.
-    \item \href{https://blog.floydhub.com/an-introduction-to-q-learning-reinforcement-learning/}{Source} 
+
 \end{enumerate}
 
 \subsection{Algorithmen}
