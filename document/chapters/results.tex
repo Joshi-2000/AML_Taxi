@@ -131,7 +131,7 @@
     \item SARSA\\
 \end{itemize}
 
-\subsection{Vergleich Algorithmen}
+\subsection{Vergleichen von Algorithmen}
 
 Im folgenden werden die Ergebnisse beschrieben, welche bei dem Vergleichen der Algorithmen Q-Learning und SARSA entstanden sind.
 Dabei wurde der Vergleich an den drei Reinforcement Learning Problemen Taxi, Cliff und Frozen Lake durchgeführt. Es wurden jeweils passende Paramater für das entsprechende Problem gewählt.
@@ -139,12 +139,12 @@ Dabei wurde der Vergleich an den drei Reinforcement Learning Problemen Taxi, Cli
 
 In der Abbildung \ref{fig:taxi_train} sind die Ergebnisse für den Vergleich des Q-Learning und SARSA Algorithmus dargestellt. In der linken Abbildung \ref{fig:taxi_rew} sind die Rewards in dem zeitlichen Verlauf über die 3000 Trainingsepisoden abgebildet. Zu erkennen ist hier, dass beide Algorithmen nach ca. 1500 Episoden Richtung Optimum konvergieren. Der Q-Learning Algorithmus trainiert jedoch ein wenig schneller, was durch die anfänglich stärkere Steigung und höheren Peaks zu Beginn verdeutlicht wird.
 
-Zusätzlich ist es auffälig, dass SARSA im späteren Verlauf auch größere Peaks nach unten hate und generell ein wenig schlechter performiert als der Q-Learning Algorithmus. Somit lässt sich insgesamt für die Belohnung feststellen, dass Q-Learning schneller zu einem besseren Ergebnis kommt als SARSA. 
+Zusätzlich ist es auffällig, dass SARSA im späteren Verlauf auch größere Peaks nach unten hate und generell ein wenig schlechter performiert als der Q-Learning Algorithmus. Somit lässt sich insgesamt für die Belohnung feststellen, dass Q-Learning schneller zu einem besseren Ergebnis kommt als SARSA. 
 
 In der zweiten Abbildung \ref{fig:taxi_step} sind die Anzahl der Steps abgebildet, welche der Agent jede Episode durchläuft, bis er entweder bei der maximalen Anzahl angekommen ist oder den Passagier erfolgreich zu seinem Zielort gebracht hat. Der Verlauf der beiden Kurven von Q-Learning und SARSA ist hier sehr ähnlich. Lediglich bei ca. 400 Episoden und 1300 lassen sich leicht höhere Peaks vom SARSA Algorithmus ablesen.
 Dies spricht dafür, dass SARSA in diesen Phasen etwas langsamer gelernt hat als der Q-Learning Algorithmus.
 
-Betrachtet man 
+Wichtig zu erwähnen ist zusätzlich, dass beide Algorithmen nach 3000 Episoden im Test perfekt opimiert sind. Im Test nutzen die trainierten Modelle keine Exploration Rate mehr, sondern gehen lediglich den Weg mit den höchsten Q-Values. Dies führt bei dem Taxi Problem bei beiden Algorithmen zu sehr ähnlichen Ergebnissen. Starten beide in dem gleichen State, laufen sie die fast die gleichen Wege um den Passagier abzuholen und zum Ziel zu bringen.
 
 \begin{figure}[H]
     \centering
@@ -165,6 +165,14 @@ Betrachtet man
 \end{figure}
 
 \subsubsection{Cliff}
+
+Mit dem Cliff Problem lässt sich einer der besonderen Unterschiede zwischen Q-Learning und SARSA sehr gut zeigen. In Abbildung \ref{fig:cliff_train} sind wie in dem vorherigen Beispiel der Verlauf der Rewards (Abbildung \ref{fig:cliff_rew}) und die Anzahl an Steps (Abbildung \ref{fig:cliff_step}) über die Episoden im Training dargestellt.
+
+Bei den Rewards ist zu erkennen dass SARSA zum Einen schneller lernt, dass heißt die Kurve geht zu Beginn schneller nach oben. Zum Anderen stagniert es auf einem höheren Reward zum Ende hin. Auch in der Abbildung \ref{fig:cliff_step} lässt sich ein Unterschied feststellen. Zu Beginn Verlaufen Sie zwar sehr ähnlich zum Ende hin ist es aber auffällig, dass SARSA bei eine höheren Anzahl an Steps stagniert, während der Verlauf bei Q-Learning deutlich niedriger, aber auch mit mehr Schwankungen vorliegt.
+
+
+
+
 \begin{figure}[H]
     \centering
     \begin{subfigure}{.5\textwidth}
@@ -183,6 +191,11 @@ Betrachtet man
     \label{fig:cliff_train}
 \end{figure}
 
+Dies liegt daran, dass SARSA ein on-policy Algorithmus ist. Dies bedeutet, dass es bei der Berechnung der Q-Value berücksichtigt, dass es eine Wahrscheinlichkeit gibt, zu der der Agent im nächsten Schritt explorieren statt exploiten wird.
+Gerade bei dem Cliff Problem ist dies besonders spannend, da eine Exploration, welche in der Klippe endet, sehr fatal sein kann. In der Abbildung \ref{fig:cliff_path} sind die Wege dargestellt, welche die Algorithmen wählen. SARSA entscheidet sich aufgrund der on-policy Strategie für den ``safe path'' während Q-Learning für den ``optimal path'' geht. 
+Beide Wege haben durchaus ihre Vor- und Nachteile und können je nach Anwendungsfall den subjektiv besseren Weg darstellen.
+Aus den eben genannten Gründen nennt man Q-Learning auch einen greedy-Algorithmus, da er für den möglichst kürzten Weg geht, während SARSA etwas vorsichtiger, also weniger greedy, agiert.
+
 \begin{figure}[H]
     \includegraphics[scale=0.4]{cliff_path}
     \caption{Cliff Q-Learning vs SARSA Pfad}
@@ -190,6 +203,10 @@ Betrachtet man
 \end{figure}
 
 \subsubsection{Frozen Lake}
+
+Das Frozen Lake Problem hat die Besonderheit, dass es nicht zu 100\% optimiert werden kann. Dies ist auch in den Abbildungen der Rewards (Abb. \ref{fig:frozen_rew}) und der Steps (Abb. \ref{fig:frozen_step}) zu erkennen. Beide Graphen verlaufen zwar jeweils ähnlich und stagnieren auf einem Niveau unter dem Optimum. Bezüglich der Unterschiede lässt sich hier kein sichtbarer Unterschied zwischen der Performance der Algorithmen aufzeigen. Bei den Rewards brauchen beide Algorithtmen ca. 500 Episoden um das Zielfeld regelmäßiger zu finden. Nach 2000 Episoden schaffen beide es teilweise zu 80\% während des Trainings. 
+Anhand des Step Graphen ist zu erkennen, dass beide Algorithmen zu Beginn schnell in eines der Löcher fallen und somit die Episoden frühzeitig enden. Über die Zeit schaffen sie es aber länger auf dem Frozen Lake zu laufen. Optimalerweise würde die Anzahl der Steps gegen Ende wieder etwas sinken, dies ist aber in den ersten 2000 Episoden nicht der Fall.
+
 
 \begin{figure}[H]
     \centering
@@ -208,4 +225,6 @@ Betrachtet man
     \caption{Frozen Lake Problem über 2000 Episoden während dem Training}
     \label{fig:frozen_train}
 \end{figure}
+
+Dies kann daran liegen, dass das Environment durch den Zufallsparameter $is\_slippery = True$ für sehr zufällige Episoden sorgt. Dies ist auch daran zu erkennen, dass trotz des Rolling Windows, die Graphen sehr stark schwanken.
 
