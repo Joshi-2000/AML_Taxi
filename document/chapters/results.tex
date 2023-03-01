@@ -33,7 +33,7 @@
     \item SARSA\\
     Das Verhalten von SARSA auf dem Taxiproblem ist sehr indentisch zu dem von Q-Learning, daher sind ist auch hier ein Wert von 1300 optimal.
     Bei dem Cliffproblem konvergiert der Reward ab 600 Epochen und beim FrozenLake Problem erzielt der Agent ab 2000 Epochen keinen Fortschritt mehr.
-    In Abbildung \ref(fig:SARSA_NumOfEpisods) ist der Traingsverlauf von dem Cliffproblem (blau) und dem ForzenLake Problem (Orange) zu dargestellt.
+    In Abbildung \ref{fig:SARSA_NumOfEpisods} ist der Traingsverlauf von dem Cliffproblem (blau) und dem ForzenLake Problem (Orange) zu dargestellt.
     \begin{figure}[H]
       \centering
       \includegraphics[scale=0.7]{Hyper_NumOfEpochs_Multi_SARSA}
@@ -74,9 +74,9 @@
     Dies hängt mit der durchschnittlich niedrigeren Anzahl an Steps, die zum Lösen des Problems benötigt werden, zusammen. 
     Bei der Untersuchung des Frozen Lake Problems konnte kein signifikanter Einfluss des Hyperparameters festgestellt werden, um Trainingszeit, die Trainingszeit gering zu halten wurde 500 als Wert festgelegt.
     \item SARSA\\
-    
-
-
+    Die Auswirkung der maximalen Steps auf SARSA bei dem Taxiproblem sind vergleichbar mit Q-Learning, verschiedene Versuche habe gezeigt, dass 2000 ein guter Wert für diesen Hyperparameter dargestellt.
+Auf das Cliff Problem hat dieser Parameter kaum einen Einfluss, sodass der initiale Wert beibehalten werden kann.
+Bei der Lösung der Frozen Lake Problems verbessert die Erhöhung der maximalen Steps das Ergebnis, als optimalen Wert wurde dabei erneut 2000 gewählt.
 \end{itemize}
 \subsubsection{Learning Rate}
 \begin{itemize}
@@ -103,7 +103,11 @@
         \caption{Auswirkung der Learning Rate}
         \label{fig:learningRate_Q-Learning}
     \end{figure}
-    \item SARSA
+    \item SARSA\\
+    Das Anheben der Learning Rate bei dem Taxiproblem führte bei SARSA sehr schnell zu einem unstabilen Verhalten, eine Reduktion verlangsamte das Training.
+  	Somit führte keine Veränderung des Parameters zu einem bessern Ergebnis, und der initiale Wert wird beibehalten.
+    Bei dem Cliff Problem für das Anheben erneut zu unstabilen Verhalten, die Reduzierung verbesserte jedoch das Ergebnis leicht, somit wurde ein Wert von 0,05 gewählt.
+    Das Frozen Lake Problem konnte mit einer leicht erhöhten Learning Rate von SARSA besser gelöst werden, und es wurde final ein Wert von 0,3 festgesetzt.
 \end{itemize}
 \subsubsection{Discount Faktor}
 \begin{itemize}
@@ -132,18 +136,19 @@
     Dieser hohe Initialwert verursachte bei dem Lake Problem häufiger einen Leistungseinbruch, der Agent war dann nicht mehr in der Lage, die Aufgabenstellung zu lösen.
     Durch eine Reduzierung des Wertes auf 0,2 konnte dieses Problem behoben werden.
     \item SARSA\\
+    Eine Reduzierung des Hyperparameter führte beim Taxiproblem zu deutlich schlechteren Ergebnissen, da der initiale Wert bereits sehr nah am Maximum liegt, wurde dieser übernommen.
+Ähnliches Verhalten zeigte sich auch bei der Untersuchung des Cliff Problems und von Frozen Lake, somit blieb auch dort der Parameter unverändert.
 \end{itemize}
 \subsubsection{Exploration Rate}
 
 \begin{itemize}
   \item Q-Learning\\
-  In Experimenten mit dem Taxiproblem hat sich gezeigt, dass eine Reduzierung der Exploration Decay Rate zu einem längeren Training führt, ohne dabei am Ende mehr Stabilität zu bringen (vgl. Abbildung \ref{ExplorationDecayRate_low}).
-  Das Erhöhen hingegen beschleunigt das Training minimal (vgl. Abbildung \ref{ExplorationDecayRate_high}).
+  In Experimenten mit dem Taxiproblem hat sich gezeigt, dass eine Reduzierung der Exploration Decay Rate zu einem längeren Training führt, ohne dabei am Ende mehr Stabilität zu bringen (vgl. Abbildung \ref{fig:ExplorationDecayRate_low}).
+  Das Erhöhen hingegen beschleunigt das Training minimal (vgl. Abbildung \ref{fig:ExplorationDecayRate_high}).
   Um ein schnelles Training zu erreichen und zeitlich sicherzustellen, dass der Agent alle möglichen Wege erkundet, wurde ein Wert von 0,01 für dieses Hyperparameter gewählt.
   Das Verhalten von Q-Learning auf dem Cliff Problem ist sehr identisch, daher ist auch dort 0,01 ein gut geeigneter Wert.
   Durch den hohen, auf Zufall basierender, Einfluss des Environments bei dem Frozen Lake Problems ist der Einfluss der Exploration Decay Rate nur in Extremfällen feststellbar.
   Daher wurde keine Anpassung des Standardwertes vorgenommen.
-  \item SARSA\\
   \begin{figure}[H]
     \centering
     \begin{subfigure}{.5\textwidth}
@@ -161,6 +166,11 @@
     \caption{Auswirkung der Exploration Decay Rate}
     \label{fig:ExplorationDecayRate_Q-Learning}
   \end{figure}
+  \item SARSA\\
+  Die Reduzierung der Exploration Decay Rate führt beim Taxiproblem und Cliff Problem, zu einem sehr Langsamen Training.
+  Weitere Versuche Ergaben dass 0,1 auch für SARSA ein gutes Gleichgewicht zwischen Lerngeschwindigkeit und Exploration des Environments ist.
+  Beim FrozenLake Problem überschattet der Zufallsfaktor des Environments jeglichen Einfluss dieses Parameters, somit bleibt der Wert unverändert.
+
 \end{itemize}
 Eine Reduzierung der minimal Exploration Rate beschleunigt bei allen drei Problemen den Trainingsvorgang.
 Wird dieser Wert jedoch zu gering gewählt, tritt schon während des Trainings der Punkt ein, an dem der Agent ausschließlich Exploitation betreibt und somit nicht mehr lernt.
